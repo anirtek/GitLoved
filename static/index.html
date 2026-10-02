@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GitLoved</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div id="app" class="hidden">
+
+  <!-- ══ Main toolbar ══════════════════════════════════════════════════ -->
+  <header id="main-toolbar">
+    <div class="tb-left">
+      <button class="tb-icon" id="btn-hamburger" title="Main Menu">☰</button>
+      <button class="project-widget" id="btn-project" title="Open project…">
+        <span class="project-avatar" id="project-avatar">G</span>
+        <span id="project-name">GitLoved</span>
+        <span class="chev">▾</span>
+      </button>
+      <button class="vcs-widget" id="btn-branch" title="Git Branches">
+        <svg class="ic" viewBox="0 0 16 16"><path class="st" d="M5 3.5a1.7 1.7 0 1 1-3.4 0 1.7 1.7 0 0 1 3.4 0Zm0 9a1.7 1.7 0 1 1-3.4 0 1.7 1.7 0 0 1 3.4 0Zm9-9a1.7 1.7 0 1 1-3.4 0 1.7 1.7 0 0 1 3.4 0Z"/><path class="st" d="M3.3 5.2v6.1M12.7 5.3c0 2.5-2 3.2-4.2 3.6-1.7.3-3.4.7-4.2 2"/></svg>
+        <span id="branch-name">…</span>
+        <span class="in-out" id="branch-inout"></span>
+        <span class="chev">▾</span>
+      </button>
+      <span class="op-badge hidden" id="op-badge"></span>
+    </div>
+    <div class="tb-right">
+      <button class="tb-icon" id="btn-update" title="Update Project (Pull)">
+        <svg class="ic" viewBox="0 0 16 16"><path class="st" d="M8 2.5v8m0 0 3.2-3.2M8 10.5 4.8 7.3"/><path class="st" d="M2.5 13.5h11"/></svg>
+      </button>
+      <button class="tb-icon" id="btn-commit-tw" title="Commit… (⌘K)">
+        <svg class="ic" viewBox="0 0 16 16"><path class="st" d="m3.5 8.5 3 3 6-6.5"/></svg>
+      </button>
+      <button class="tb-icon" id="btn-push" title="Push… (⇧⌘K)">
+        <svg class="ic" viewBox="0 0 16 16"><path class="st green" d="M8 13.5v-8m0 0L4.8 8.7M8 5.5l3.2 3.2"/><path class="st green" d="M2.5 2.5h11"/></svg>
+      </button>
+      <span class="tb-sep"></span>
+      <button class="tb-icon" id="btn-fetch" title="Fetch All Remotes">
+        <svg class="ic" viewBox="0 0 16 16"><path class="st" d="M13.6 8A5.6 5.6 0 1 1 8 2.4c2.2 0 3.6 1 4.8 2.6"/><path class="st" d="M13 2.2v3l-3-.2"/></svg>
+      </button>
+      <button class="tb-icon" id="btn-stash" title="Stash Changes…">
+        <svg class="ic" viewBox="0 0 16 16"><path class="st" d="M2.5 6.5h11v7h-11zM5 6.5v-2A1.5 1.5 0 0 1 6.5 3h3A1.5 1.5 0 0 1 11 4.5v2"/></svg>
+      </button>
+      <button class="tb-icon" id="btn-console-tw" title="Git Console">
+        <svg class="ic" viewBox="0 0 16 16"><path class="st" d="m3 4.5 3.5 3.5L3 11.5M8.5 12h4.5"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ══ Body: rail + commit panel + editor + bottom tool window ═══════ -->
+  <div id="body-row">
+    <nav id="left-rail">
+      <button class="rail-btn active" id="rail-commit" title="Commit (⌘0)">
+        <svg class="ic" viewBox="0 0 16 16"><path class="st" d="m3.5 8.5 3 3 6-6.5"/></svg>
+      </button>
+      <button class="rail-btn active" id="rail-git" title="Git (⌘9)">
+        <svg class="ic" viewBox="0 0 16 16"><path class="st" d="M5 3.5a1.7 1.7 0 1 1-3.4 0 1.7 1.7 0 0 1 3.4 0Zm0 9a1.7 1.7 0 1 1-3.4 0 1.7 1.7 0 0 1 3.4 0Zm9-9a1.7 1.7 0 1 1-3.4 0 1.7 1.7 0 0 1 3.4 0Z"/><path class="st" d="M3.3 5.2v6.1M12.7 5.3c0 2.5-2 3.2-4.2 3.6-1.7.3-3.4.7-4.2 2"/></svg>
+      </button>
+    </nav>
+
+    <div id="main-col">
+      <div id="upper-row">
+        <!-- Commit tool window -->
+        <aside id="commit-tw">
+          <div class="tw-header">
+            <span class="tw-title">Commit</span>
+            <span class="tw-actions">
+              <button class="tw-icon" id="ct-refresh" title="Refresh">⟳</button>
+              <button class="tw-icon" id="ct-rollback" title="Rollback selected…">↩</button>
+              <button class="tw-icon" id="ct-hide" title="Hide">—</button>
+            </span>
+          </div>
+          <div id="conflict-banner" class="hidden">
+            <span id="conflict-text">Merge conflicts</span>
+            <a href="#" id="conflict-resolve">Resolve</a>
+            <a href="#" id="conflict-abort">Abort</a>
+            <a href="#" id="conflict-continue">Continue</a>
+          </div>
+          <div id="changes-scroll">
+            <div id="changes-tree"></div>
+          </div>
+          <div id="commit-editor">
+            <textarea id="commit-msg" placeholder="Commit Message" spellcheck="false"></textarea>
+            <label class="cb amend"><input type="checkbox" id="cb-amend"> Amend</label>
+            <div class="commit-buttons">
+              <button class="btn primary" id="btn-do-commit">Commit</button>
+              <button class="btn" id="btn-commit-push">Commit and Push…</button>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Editor / diff area -->
+        <main id="editor-area">
+          <div id="editor-tabs" class="hidden">
+            <span class="ed-tab active"><span id="ed-tab-name">Diff</span>
+              <button id="ed-tab-close" title="Close">×</button></span>
+            <span class="ed-tab-meta" id="ed-tab-meta"></span>
+          </div>
+          <div id="editor-empty">
+            <div class="empty-inner">
+              <div class="empty-logo">Git<span>Loved</span></div>
+              <p>Select a file in the Commit panel or in a commit’s details<br>to see its diff here.</p>
+              <p class="empty-keys">Double-click a file&nbsp;·&nbsp;<kbd>⌘D</kbd> Show Diff</p>
+            </div>
+          </div>
+          <div id="diff-root" class="hidden"></div>
+        </main>
+      </div>
+
+      <!-- Git tool window (bottom) -->
+      <section id="git-tw">
+        <div class="tw-tabs">
+          <span class="tw-title-tab">Git:</span>
+          <button class="tw-tab active" data-tab="log">Log</button>
+          <button class="tw-tab" data-tab="console">Console</button>
+          <span class="tw-actions">
+            <button class="tw-icon" id="log-refresh" title="Refresh">⟳</button>
+            <button class="tw-icon" id="gt-hide" title="Hide">—</button>
+          </span>
+        </div>
+
+        <div id="tab-log">
+          <div id="log-filters">
+            <input id="flt-search" type="search" placeholder="Search (git grep in messages)">
+            <button class="flt" id="flt-branch">Branch: <b>All</b> ▾</button>
+            <button class="flt" id="flt-user">User: <b>All</b> ▾</button>
+            <span class="flt-spacer"></span>
+            <span id="log-count" class="dim"></span>
+          </div>
+          <div id="log-split">
+            <div id="log-table-wrap">
+              <table id="log-table">
+                <colgroup><col class="c-graph"><col class="c-desc"><col class="c-author"><col class="c-date"><col class="c-hash"></colgroup>
+                <tbody id="log-body"></tbody>
+              </table>
+            </div>
+            <div id="commit-pane">
+              <div class="empty dim">Select a commit to see details</div>
+            </div>
+          </div>
+        </div>
+
+        <div id="tab-console" class="hidden">
+          <div id="console-out"></div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- ══ Status bar ═════════════════════════════════════════════════════ -->
+  <footer id="status-bar">
+    <span id="sb-path" class="dim"></span>
+    <span class="flt-spacer"></span>
+    <span id="sb-msg"></span>
+    <button id="sb-branch" title="Git Branches">
+      <svg class="ic s" viewBox="0 0 16 16"><path class="st" d="M5 3.5a1.7 1.7 0 1 1-3.4 0 1.7 1.7 0 0 1 3.4 0Zm0 9a1.7 1.7 0 1 1-3.4 0 1.7 1.7 0 0 1 3.4 0Zm9-9a1.7 1.7 0 1 1-3.4 0 1.7 1.7 0 0 1 3.4 0Z"/><path class="st" d="M3.3 5.2v6.1M12.7 5.3c0 2.5-2 3.2-4.2 3.6-1.7.3-3.4.7-4.2 2"/></svg>
+      <span id="sb-branch-name"></span>
+    </button>
+  </footer>
+</div>
+
+<!-- Welcome screen (no project open) -->
+<div id="welcome">
+  <div class="welcome-card">
+    <div class="welcome-logo">Git<span>Loved</span></div>
+    <div class="welcome-sub">A love letter to the JetBrains Git plugin</div>
+    <div class="welcome-actions">
+      <button class="btn primary" id="w-open">Open…</button>
+      <button class="btn" id="w-clone">Get from VCS…</button>
+    </div>
+    <div id="recent-list"></div>
+  </div>
+</div>
+
+<!-- dynamic layers -->
+<div id="popup-layer"></div>
+<div id="modal-layer"></div>
+<div id="balloons"></div>
+
+<script src="/app.js"></script>
+</body>
+</html>
